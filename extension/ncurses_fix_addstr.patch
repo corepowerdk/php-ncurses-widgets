@@ -1,0 +1,84 @@
+--- ncurses_functions.c.php7	2016-06-25 17:33:55.671674875 +0200
++++ ncurses_functions.c	2016-06-25 18:08:59.133644858 +0200
+@@ -1194,14 +1194,13 @@
+    Outputs text at current position */
+ PHP_FUNCTION(ncurses_addstr)
+ {
+-	char *str;
+-	int str_len;
++	zend_string *str;
+ 
+-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &str, &str_len) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS(), "S", &str) == FAILURE) {
+ 		return;
+ 	}
+ 	IS_NCURSES_INITIALIZED();
+-	RETURN_LONG(addstr(str));
++	RETURN_LONG(addstr(ZSTR_VAL(str)));
+ }
+ /* }}} */
+ 
+@@ -1394,14 +1393,13 @@
+ PHP_FUNCTION(ncurses_mvaddstr)
+ {
+ 	long y,x;
+-	char *str;
+-	int str_len;
++	zend_string *str;
+ 
+-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "lls", &y, &x, &str, &str_len) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS(), "llS", &y, &x, &str) == FAILURE) {
+ 	        return;
+ 	}
+ 	IS_NCURSES_INITIALIZED();
+-	RETURN_LONG(mvaddstr(y,x,str));
++	RETURN_LONG(mvaddstr(y,x,ZSTR_VAL(str)));
+ }
+ /* }}} */
+ 
+@@ -1736,17 +1734,16 @@
+ {
+ 	zval *handle;
+ 	long y, x;
+-	int text_len;
+-	char *text;
++	zend_string *str;
+ 	WINDOW **w;
+ 
+-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rlls", &handle, &y, &x, &text, &text_len) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rllS", &handle, &y, &x, &str) == FAILURE) {
+ 		return;
+ 	}
+ 	
+ 	FETCH_WINRES(w, handle);
+ 
+-	RETURN_LONG(mvwaddstr(*w,y,x,text));
++	RETURN_LONG(mvwaddstr(*w,y,x,ZSTR_VAL(str)));
+ }
+ /* }}} */
+ 
+@@ -2091,20 +2088,19 @@
+ PHP_FUNCTION(ncurses_waddstr)
+ {
+ 	zval *handle;
+-	char *str;
+-	int str_len;
++	zend_string *str;
+ 	long n = 0;
+ 	WINDOW **win;
+ 
+-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rs|l", &handle, &str, &str_len, &n) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rS|l", &handle, &str, &n) == FAILURE) {
+ 		return;
+ 	}
+ 
+ 	FETCH_WINRES(win, handle);
+ 	if (!n) {
+-		RETURN_LONG(waddstr(*win, str));
++		RETURN_LONG(waddstr(*win, ZSTR_VAL(str)));
+ 	} else {
+-		RETURN_LONG(waddnstr(*win, str, n));
++		RETURN_LONG(waddnstr(*win, ZSTR_VAL(str), n));
+ 	}
+ }
+ /* }}} */

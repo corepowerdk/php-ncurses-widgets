@@ -1,0 +1,11 @@
+--- ncurses_functions.c.php7	2016-06-25 18:14:29.465969937 +0200
++++ ncurses_functions.c	2016-06-25 18:15:26.693040014 +0200
+@@ -1796,7 +1796,7 @@
+    Returns and sets mouse options */
+ PHP_FUNCTION(ncurses_mousemask)
+ {
+-	ulong oldmask;
++	int oldmask;
+ 	ulong retval;
+ 	zval *param;
+ 	long newmask;
